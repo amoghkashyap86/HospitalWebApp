@@ -3,10 +3,10 @@ const express = require("express")
 const app = express()
 var mysqlconnection = mysql.createConnection(
     {
-        host: 'localhost',
-        user: 'root',
-        password: 'amogh',
-        database: 'hospital'
+        host: 'hospitalaws.cvoto69mhkki.us-east-2.rds.amazonaws.com',
+        user: 'admin',
+        password: 'BankLogin!3',
+        database: 'dummy'
     }
 );
 module.exports = mysqlconnection

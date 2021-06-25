@@ -80,18 +80,25 @@ app.get("/getpidsdetail", function (req, res) {
 })
 // function to store doctor details into db
 app.post('/doctorentry', function (req, res) {
-    drname = req.body.drname;
-    drqu = req.body.drqu;
-    squery = `insert into doctor (dr_name,qua) value ('${drname}','${drqu}');`
-    mysqlconnection.query(squery, function (err, row, fields) {
+    dname = req.body.drname;
+    dqualification = req.body.drqu;
+    squery = `insert into doctor (dname,dqualification) value ('${dname}','${dqualification}');`
+    let validate= async()=>{mysqlconnection.query(squery, function (err, row, fields) {
         if (err) {
-            console.log("error near line 107", err)
+            return new Error("got an error")
         }
         else {
-            console.log(row)
+            return row
+        }
+    })}
+    validate().then(data=>{
+        if(data!=Error){
+            res.send("doctor has been inserted")
+        }else{
+            res.status(500)
+            res.send("some error")
         }
     })
-    res.send("doctor has been entered")
 
 
 })
@@ -103,7 +110,7 @@ app.get("/getdoctor", function (req, res) {
         if (err) {
             console.log("error at line 122", err)
         } else {
-            console.log(row)
+            // console.log(row)
             res.send(row)
         }
 
@@ -114,53 +121,48 @@ app.get("/getdoctor", function (req, res) {
 app.post("/savedata", function (req, res) {
     // pid = req.body.pid;
     pname = req.body.pname;
-    page = req.body.page;
-    pnumber = req.body.pnumber;
-    pbloodgroup = req.body.pbloodgroup;
+    p_age = req.body.page;
+    pphone = req.body.pnumber;
+    blood_group = req.body.pbloodgroup;
     pweight = req.body.pweight;
     pgender = req.body.gender;
 
     paddress = req.body.paddress;
-    padmissiondate = req.body.padmissiondate
-    dr_id = req.body.sel1
-    // for (let opt of sel.options) {
-    //     if (opt.selected) {
-    //         console.log(opt.value)
-    //     }
-    // }
-    console.log(dr_id)
+    paddate = req.body.padmissiondate
+    did = req.body.sel1
+   
+    console.log(did)
     console.log(pgender)
     console.log(paddress)
-    insertquerry = `insert into  patient(pname,p_age,p_number,pgender,blood_group,weight,address,admission_date,dr_id) values ('${pname}',${page},${pnumber},'${pgender}','${pbloodgroup}',${pweight},'${paddress}','${padmissiondate}',${dr_id})`;
-    // insertquerry = `insert into  patient values (7,'${pname}',${page},${pnumber},'${pgender}','${pbloodgroup}',${pweight},'${paddress}','${padmissiondate}',${dr_id})`;
-    var pid
-    mysqlconnection.query(insertquerry, function (err, row, fiels) {
-        if (!err) {
-            console.log("im here")
-            console.log(row)
-            pid = row['insertId']
-            console.log(pid)
-            mysqlconnection.query(`insert into room (pno) values(${pid})`, function (err, row, fields) {
-                if (!err) {
-                    console.log("room inserted for a particular patient")
-                    res.send("form submited")
-                } else {
-                    mysqlconnection.query(`delete from patient where pno=${pid}`, function (err, row, fields) {
-                        if (!err) {
-                            console.log("everything is normal!!")
-                        }
+    
+    insertquerry = `insert into  patient(pname,p_age,pphone,pgender,blood_group,pweight,paddress,paddate) values ('${pname}',${p_age},${pphone},'${pgender}','${blood_group}',${pweight},'${paddress}','${paddate}')`;
+    let pid=async()=>{
+        mysqlconnection.query(insertquerry, function (err, row, fiels) {
+            if (!err) {
+                console.log("im here")
+                console.log(row)
+                treetsId=async()=>{
+                    mysqlconnection.query(`insert into treats values(${row['insertId']},${did})`,(err,row,fields)=>{
+                            if(!err){
+                                return "success"
+                            }else{
+                                return "failure while inerting doctor and patient"
+                            }
                     })
-                    res.send("rooms full")
                 }
-            })
-
-        } else {
-            console.log(err, "error near /savedata")
-        }
-    })
+                treetsId().then(data=>{
+                    return data
+                })
+             } else {
+                            return "failure"
+            }
+        })
+     } 
     // insertquerry2=`insert into room(pno) values()`
-    console.log(pid, "hi line 177")
-
+    pid().then(data=>{
+        console.log(data)
+        res.send('patient has been inserted');
+    })
 })
 // all related to profile
 var id = -1
@@ -172,7 +174,9 @@ app.get("/patientprofile/:pid", function (req, res) {
 // function to delete a patient
 app.get("/deleteprofile/:pid", function (req, res) {
     id = req.params.pid
-    mysqlconnection.query(`delete from patient where pno=${id};`, function (err, row, field) {
+    console.log(id)
+    mysqlconnection.query()
+    mysqlconnection.query(`delete from patient where pid=${id};`, function (err, row, field) {
         if (err) {
             console.log("error at line 196 while doing delete")
         } else {
@@ -209,6 +213,7 @@ app.get("/getroom", function (req, res) {
         }
     })
 })
+// functio
 app.get("/getdata", function (req, res) {
     mysqlconnection.query('select * from patient;', function (err, row, fields) {
         if (!err) {

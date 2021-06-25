@@ -18,16 +18,17 @@
     <table class="table table-dark">
         <thead class="">
             <tr>
-                <th scope="col">pno</th>
-                <th scope="col">pname</th>
-                <th scope="col">p_age</th>
-                <th scope="col">p_number</th>
-                <th scope="col">pgender</th>
-                <th scope="col">blood_group</th>
-                <th scope="col">weight</th>
+                <th scope="col">patient name</th>
+                <th scope="col">phone number</th>
+                <th scope="col">patient id</th>
+                <th scope="col">patient age</th>
+                <th scope="col">patient weight</th>
+                <th scope="col">adimission date</th>
                 <th scope="col">address</th>
-                <th scope="col">Adimitted Date</th>
-                <th scope="col">Dr_id</th>
+                <th scope="col">blood_group</th>
+                <th scope="col">gender</th>
+                <!-- <th scope="col">Adimitted Date</th> -->
+                <!-- <th scope="col">Dr_id</th> -->
                 <th scope="col">Operation</th>
             </tr>
         </thead>
@@ -54,7 +55,7 @@
             for (key in data[i]) {
                 var cel1 = newrow.insertCell(cellno)
                 console.log(data[i][key])
-                if (key === "pno") {
+                if (key === "pname") {
                     cel1.innerHTML = `<a href="/patientprofile/${data[i][key]}">${data[i][key]}</a>`
                 } else {
                     cel1.innerHTML = data[i][key]
@@ -62,7 +63,7 @@
                 cellno++
             }
             var cel1 = newrow.insertCell(cellno)
-            cel1.innerHTML = `<a class="btn btn-default btn-danger"href="/deleteprofile/${data[i]["pno"]}">Delete</a>`
+            cel1.innerHTML = `<a class="btn btn-default btn-danger"href="/deleteprofile/${data[i]["pid"]}">Delete</a>`
         }
     })
 </script>

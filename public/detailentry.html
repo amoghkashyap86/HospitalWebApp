@@ -111,8 +111,8 @@
         return data.json()
     }).then(function (dat) {
         for (d in dat) {
-            f.options[f.options.length] = new Option(dat[d]["dr_name"], dat[d]["dr_id"])
-            console.log(dat[d]["dr_id"])
+            f.options[f.options.length] = new Option(dat[d]["dname"], dat[d]["did"])
+            console.log(dat[d]["did"])
         }
     })
 </script>
